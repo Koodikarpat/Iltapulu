@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:checkable="true"
+        android:id="@+id/smlogin"
+        android:title="@string/smlogin" />
+    <item android:id="@+id/menuMessageHistory"
+        android:title="@string/see_post_history"/>
+    <item
+        android:title="@string/post"
+        android:id="@+id/postButton"/>
+</menu>

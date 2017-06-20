@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">SomeBro</string>
+    <string name="enter_your_post">Enter your post</string>
+    <string name="camera">camera</string>
+    <string name="gallery">choose from gallery</string>
+    <string name="hashtags">#hasttags</string>
+    <string name="settings">Settings</string>
+    <string name="search">Search</string>
+    <string name="title">SomeBro</string>
+    <string name="twitter">Twitter</string>
+    <string name="fb">Facebook</string>
+    <string name="post">post</string>
+    <string name="facebook_app_id">1760231880958026</string>
+    <string name="instagram">Instagram</string>
+    <string name="unlock">UNLOCK</string>
+    <string name="unlockpassword">unlockPassword</string>
+    <string name="placeHolder">text</string>
+
+    <string name="twitter_consumer_key">Y4QJVs9F7nWDizjPQrIR5Yg7d</string>
+    <string name="twitter_consumer_secret">exoOc6Hk7W3HOkaM0HDpqGgw9leY6iWgITVFLHXWZCwecruhS9</string>
+    <string name="login_via_facebook">Login via Facebook</string>
+    <string name="login_via_twitter">Login via Twitter</string>
+    <string name="login_via_instagram">Login via Instagram</string>
+    <string name="smlogin">Login to Social Media</string>
+    <string name="see_post_history">See post history</string>
+    <string name="noposts">No posts in the database</string>
+</resources>
