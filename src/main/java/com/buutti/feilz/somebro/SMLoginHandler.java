@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.github.gorbin.asne.core.SocialNetwork;
@@ -87,4 +88,8 @@ public class SMLoginHandler extends AppCompatActivity implements FragmentManager
         sn=LoginFragment.mSocialNetworkManager.getSocialNetwork(LoginFragment.FACEBOOK);
         if (sn.isConnected()) sn.logout();
     }
+   /* public void onNextButtonClick(View view) {
+        Intent i = new Intent(this, PostActivity.class);
+        startActivity(i);
+    }*/
 }

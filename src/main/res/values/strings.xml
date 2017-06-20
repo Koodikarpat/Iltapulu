@@ -24,4 +24,5 @@
     <string name="smlogin">Login to Social Media</string>
     <string name="see_post_history">See post history</string>
     <string name="noposts">No posts in the database</string>
+    <string name="title_activity_post">postActivity</string>
 </resources>

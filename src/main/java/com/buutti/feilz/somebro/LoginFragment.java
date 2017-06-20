@@ -1,5 +1,6 @@
 package com.buutti.feilz.somebro;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -34,6 +35,8 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
      * 6 - Odnoklassniki
      * 7 - Instagram
      */
+    protected SMLoginHandler smlh;
+
     public static final int TWITTER =1;
     public static final int LINKEDIN =2;
     public static final int GOOGLE =3;
@@ -42,6 +45,7 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
     private Button facebook;
     private Button twitter;
     private Button instagram;
+    private Button nextButton;
 
     public CheckBox fbCB;
     public CheckBox twCB;
@@ -59,6 +63,8 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
         facebook.setOnClickListener(loginClick);
         twitter = (Button) rootView.findViewById(R.id.twitter);
         twitter.setOnClickListener(loginClick);
+        nextButton = (Button) rootView.findViewById(R.id.nextButton);
+        nextButton.setOnClickListener(nextClick);
      /*   instagram = (Button) rootView.findViewById(R.id.instagram);
         instagram.setOnClickListener(loginClick);*/
 
@@ -197,4 +203,15 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
                 .replace(R.id.container, profile)
                 .commit();
     } */
+
+private View.OnClickListener nextClick = new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+
+        Log.i("LOG IN", "click");
+        Intent i = new Intent(view.getContext(), PostActivity.class);
+        startActivity(i);
+    }
+};
+
 }
