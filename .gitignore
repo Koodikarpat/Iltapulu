@@ -1,4 +1,4 @@
-
+.idea/
 .gradle
 /local.properties
 /.idea/workspace.xml
@@ -6,3 +6,7 @@
 .DS_Store
 /build
 /captures
+gradle/
+gradlew
+gradlew.bat
+iltapulu.iml
