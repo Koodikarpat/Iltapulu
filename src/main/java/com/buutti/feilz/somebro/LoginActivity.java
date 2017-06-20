@@ -44,11 +44,15 @@ public class LoginActivity extends Activity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("newUser","task");
-                spn.putString("userPW",loginText.getText().toString());
-                Toast.makeText(getApplicationContext(),"This password is required in the future to access this app",Toast.LENGTH_LONG).show();
-                spn.apply();
-                finish();
+                if (loginText.getText().toString().equals("")) {
+                    Toast.makeText(getApplicationContext(), "The field cannot be empty u dumb f*ck", Toast.LENGTH_LONG).show();
+                } else {
+                    Log.d("newUser", "task");
+                    spn.putString("userPW", loginText.getText().toString());
+                    Toast.makeText(getApplicationContext(), "This password is required in the future to access this app", Toast.LENGTH_LONG).show();
+                    spn.apply();
+                    finish();
+                }
             }
         });
 
