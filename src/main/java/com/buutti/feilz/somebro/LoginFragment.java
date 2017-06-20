@@ -2,6 +2,7 @@ package com.buutti.feilz.somebro;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +59,8 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
         facebook.setOnClickListener(loginClick);
         twitter = (Button) rootView.findViewById(R.id.twitter);
         twitter.setOnClickListener(loginClick);
+     /*   instagram = (Button) rootView.findViewById(R.id.instagram);
+        instagram.setOnClickListener(loginClick);*/
 
 
         //Get Keys for initiate SocialNetworks
@@ -86,7 +89,7 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
             TwitterSocialNetwork twNetwork = new TwitterSocialNetwork(this, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_CALLBACK_URL);
             mSocialNetworkManager.addSocialNetwork(twNetwork);
 
-            //InstagramSocialNetwork igNetwork = new InstagramSocialNetwork(this,)
+            /*InstagramSocialNetwork igNetwork = new InstagramSocialNetwork(this, "6ee691c04df7411a80e886bd73772f82", "cf62a9346c8c4c39afec109e282256a0", "127.0.0.1://redirect", "");*/
             //Initiate every network from mSocialNetworkManager
 
             getFragmentManager().beginTransaction().add(mSocialNetworkManager, SMLoginHandler.SOCIAL_NETWORK_TAG).commit();
@@ -135,6 +138,7 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
         @Override
         public void onClick(View view) {
             int networkId = 0;
+            Log.i("LOG IN", "click");
             switch (view.getId()){
                 case R.id.facebook:
                     networkId = FacebookSocialNetwork.ID;
@@ -142,8 +146,9 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
                 case R.id.twitter:
                     networkId = TwitterSocialNetwork.ID;
                     break;
-                case R.id.instagram:
+               /* case R.id.instagram:
                     networkId=InstagramSocialNetwork.ID;
+                    Log.i("LOG IN", "LOG IN IG"); */
 
             }
             SocialNetwork socialNetwork = mSocialNetworkManager.getSocialNetwork(networkId);
@@ -151,6 +156,7 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
                 if(networkId != 0) {
                     socialNetwork.requestLogin();
                     SMLoginHandler.showProgress("Loading social person");
+                    Log.i("LOG IN", "LOG IN SUCC");
                 } else {
                     Toast.makeText(getActivity(), "Wrong networkId", Toast.LENGTH_LONG).show();
                 }
