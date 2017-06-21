@@ -21,6 +21,7 @@ import com.github.gorbin.asne.twitter.TwitterSocialNetwork;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.StringTokenizer;
 
 
 public class LoginFragment extends Fragment implements SocialNetworkManager.OnInitializationCompleteListener, OnLoginCompleteListener {
@@ -50,7 +51,13 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
     public CheckBox fbCB;
     public CheckBox twCB;
 
+    public boolean isFbLoggedIn;
+    public boolean isTwitterLoggedIn;
+
+    MainActivity mainActivity;
+
     public LoginFragment() {
+
     }
 
     @Override
@@ -110,6 +117,11 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
                 }
             }
         }
+        mainActivity = new MainActivity();
+
+        isFbLoggedIn = false;
+        isTwitterLoggedIn = false;
+
         return rootView;
     }
 
@@ -118,9 +130,11 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
             switch (socialNetwork.getID()){
                 case FacebookSocialNetwork.ID:
                     facebook.setText("Show Facebook profile");
+                    isFbLoggedIn = true;
                     break;
                 case TwitterSocialNetwork.ID:
                     twitter.setText("Show Twitter profile");
+                    isTwitterLoggedIn = true;
                     break;
                 case InstagramSocialNetwork.ID:
                     instagram.setText("Show Instagram profile");
@@ -179,9 +193,11 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
         switch (networkId) {
             case FacebookSocialNetwork.ID:
                 facebook.setText("Show Facebook profile");
+                isFbLoggedIn = true;
                 break;
             case TwitterSocialNetwork.ID:
                 twitter.setText("Show Twitter profile");
+                isTwitterLoggedIn = true;
                 break;
             case InstagramSocialNetwork.ID:
                 instagram.setText("Show Instagram profile");
@@ -209,7 +225,24 @@ private View.OnClickListener nextClick = new View.OnClickListener() {
     public void onClick(View view) {
 
         Log.i("LOG IN", "click");
-        Intent i = new Intent(view.getContext(), PostActivity.class);
+        Intent i = new Intent(view.getContext(), MainActivity.class);
+
+        String strFb;
+        String strTwitter;
+
+        if(isFbLoggedIn){
+            strFb = "true";
+        }else {
+            strFb = "false";
+        }
+        if(isTwitterLoggedIn){
+            strTwitter = "true";
+        }else{
+            strTwitter = "false";
+        }
+
+        i.putExtra("isFbLoggedIn", strFb);
+        i.putExtra("isTwitterLoggedIn", strTwitter);
         startActivity(i);
     }
 };

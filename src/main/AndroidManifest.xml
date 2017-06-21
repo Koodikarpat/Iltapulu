@@ -60,10 +60,6 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity
-            android:name=".PostActivity"
-            android:label="@string/title_activity_post"
-            android:theme="@style/CustomTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -16,11 +16,15 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.github.gorbin.asne.core.SocialNetwork;
@@ -40,6 +44,11 @@ public class MainActivity extends AppCompatActivity {
     EditText textToSend;
     ImageView photo;
     Bitmap bitmap;
+    Switch fbSwitch;
+    Switch twitterSwitch;
+    Button postButton;
+
+
     final static int PICK_IMAGE = 1;
     final static int IMAGE_CAPTURE = 2;
     final static int REQUEST_READWRITE = 3;
@@ -62,6 +71,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         db=new DatabaseOperations(this);
+
+        fbSwitch = (Switch) findViewById(R.id.fbSwitch);
+        twitterSwitch = (Switch) findViewById(R.id.twitterSwitch);
+        postButton = (Button) findViewById(R.id.postButton);
+
+        enableSwitches();
+
 
         final AlertDialog dialog;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -102,6 +118,27 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.show();
+            }
+        });
+
+        postButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                post();
+
+
+                if(fbSwitch.isChecked()){
+
+                }else{
+
+                }
+
+                if (twitterSwitch.isChecked()){
+
+                }else {
+
+                }
             }
         });
     }
@@ -268,4 +305,27 @@ public class MainActivity extends AppCompatActivity {
     private void removeSharedPreferences(){
         getApplicationContext().getSharedPreferences("myLogin",MODE_PRIVATE).edit().remove("userPW").apply();
     }
+
+    public void enableSwitches(){
+
+        Intent i = getIntent(); // gets the previously created intent
+        String isFbLoggedIn = i.getStringExtra("isFbLoggedIn");
+        String isTwitterLoggedIn = i.getStringExtra("isTwitterLoggedIn");
+
+         if(isFbLoggedIn.equals("true")){
+            fbSwitch.setEnabled(true);
+             Log.i("LOG IN FB", "TRUE");
+        }else {
+             fbSwitch.setEnabled(false);
+             Log.i("LOG IN FB", "FALSE");
+         }
+        if(isTwitterLoggedIn.equals("true")){
+            twitterSwitch.setEnabled(true);
+            Log.i("LOG IN TWIT", "TRUE");
+        }else{
+            twitterSwitch.setEnabled(false);
+            Log.i("LOG IN TWIT", "FALSE");
+        }
+    }
+
 }
