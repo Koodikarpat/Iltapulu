@@ -42,6 +42,14 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         long res = db.insert(TABLE_NAME,null, cv);
         return res != -1;
     }
+
+    public boolean putText(String post){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(COL_3, post);
+        long res = db.insert(TABLE_NAME,null, cv);
+        return res != -1;
+    }
     public Cursor getAllData(){
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery("select * from " + TABLE_NAME, null);

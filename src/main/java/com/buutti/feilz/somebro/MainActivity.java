@@ -36,6 +36,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
+import twitter4j.Twitter;
+
 public class MainActivity extends AppCompatActivity {
     String currentPicPath;
     File f;
@@ -89,10 +91,16 @@ public class MainActivity extends AppCompatActivity {
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                takePictureIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, setImageUri());
-                startActivityForResult(takePictureIntent, IMAGE_CAPTURE);
-                dialog.dismiss();
+
+                if (ContextCompat.checkSelfPermission(v.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    final Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    takePictureIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, setImageUri());
+                    startActivityForResult(takePictureIntent, IMAGE_CAPTURE);
+                    dialog.dismiss();
+                } else {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_READWRITE);
+                }
+
             }
         });
 
@@ -126,19 +134,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 post();
-
-
-                if(fbSwitch.isChecked()){
-
-                }else{
-
-                }
-
-                if (twitterSwitch.isChecked()){
-
-                }else {
-
-                }
             }
         });
     }
@@ -155,28 +150,41 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void post() {
-        db.putInfo(f.getAbsolutePath(),textToSend.getText().toString());
-        SocialNetwork sn = LoginFragment.mSocialNetworkManager.getSocialNetwork(LoginFragment.TWITTER);
-        if (sn.isConnected()) {
-            if (pic) {
-                if (sn.isConnected()) {
-                    sn.requestPostPhoto(f, textToSend.getText().toString(), postingComplete);
-                }
-            } else {
-                if (sn.isConnected()) {
-                    sn.requestPostMessage(textToSend.getText().toString(), postingComplete);
+
+        if (twitterSwitch.isChecked()) {
+            SocialNetwork sn = LoginFragment.mSocialNetworkManager.getSocialNetwork(LoginFragment.TWITTER);
+            if (sn.isConnected()) {
+                if (pic) {
+                    if (sn.isConnected()) {
+                        db.putInfo(f.getAbsolutePath(), textToSend.getText().toString());
+                        sn.requestPostPhoto(f, textToSend.getText().toString(), postingComplete);
+                    }
+                } else {
+                    if (sn.isConnected()) {
+                        db.putText(textToSend.getText().toString());
+                        sn.requestPostMessage(textToSend.getText().toString(), postingComplete);
+                        Log.i("FACE", "TEXTSENT");
+                    }
                 }
             }
         }
-        sn = LoginFragment.mSocialNetworkManager.getSocialNetwork(LoginFragment.FACEBOOK);
-        if (sn.isConnected()) {
-            if (pic) {
-                if (sn.isConnected()) {
-                    sn.requestPostPhoto(f, textToSend.getText().toString(), postingComplete);
-                }
-            } else {
-                if (sn.isConnected()) {
-                    sn.requestPostMessage(textToSend.getText().toString(), postingComplete);
+        if (fbSwitch.isChecked()){
+
+
+            SocialNetwork sn = LoginFragment.mSocialNetworkManager.getSocialNetwork(LoginFragment.FACEBOOK);
+            if (sn.isConnected()) {
+                if (pic) {
+                    if (sn.isConnected()) {
+                        db.putInfo(f.getAbsolutePath(), textToSend.getText().toString());
+                        sn.requestPostPhoto(f, textToSend.getText().toString(), postingComplete);
+                    }
+                } else {
+                    if (sn.isConnected()) {
+                        db.putText(textToSend.getText().toString());
+                        sn.requestPostMessage(textToSend.getText().toString(), postingComplete);
+
+                        Log.i("FACEBOOK", "SENT");
+                    }
                 }
             }
         }
@@ -262,12 +270,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         int id = item.getItemId();
         if (id==R.id.smlogin){
-            //Create && add methods to check if logged in to the FB service
+          /*  //Create && add methods to check if logged in to the FB service
             Intent i=new Intent(MainActivity.this,SMLoginHandler.class);
             startActivity(i);
             item.setChecked(!item.isChecked());
             send=item.isChecked();
-            return false;
+            return false; */
         }
         if (id==R.id.menuMessageHistory){
             openPostHistory();
