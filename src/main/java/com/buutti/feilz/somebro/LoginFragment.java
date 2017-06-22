@@ -84,7 +84,7 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
 
         //Chose permissions
         ArrayList<String> fbScope = new ArrayList<String>();
-        fbScope.addAll(Arrays.asList("public_profile, email"));
+        fbScope.addAll(Arrays.asList("public_profile, email, publish_actions, user_status"));
         //String linkedInScope = "r_basicprofile+r_fullprofile+rw_nus+r_network+w_messages+r_emailaddress+r_contactinfo";
 
         //Use manager to manage SocialNetworks

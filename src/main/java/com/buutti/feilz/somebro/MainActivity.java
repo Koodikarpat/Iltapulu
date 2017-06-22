@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.github.gorbin.asne.core.SocialNetwork;
 import com.github.gorbin.asne.core.listener.OnPostingCompleteListener;
+import com.github.gorbin.asne.facebook.FacebookSocialNetwork;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -132,8 +133,8 @@ public class MainActivity extends AppCompatActivity {
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 post();
+                Log.d("POSTED", "FACEBOOK");
             }
         });
     }
@@ -170,13 +171,16 @@ public class MainActivity extends AppCompatActivity {
         }
         if (fbSwitch.isChecked()){
 
-
             SocialNetwork sn = LoginFragment.mSocialNetworkManager.getSocialNetwork(LoginFragment.FACEBOOK);
+            sn.requestAccessToken();
             if (sn.isConnected()) {
+                Log.i("FACEBOOK", "SMMM");
                 if (pic) {
+
                     if (sn.isConnected()) {
                         db.putInfo(f.getAbsolutePath(), textToSend.getText().toString());
                         sn.requestPostPhoto(f, textToSend.getText().toString(), postingComplete);
+
                     }
                 } else {
                     if (sn.isConnected()) {
