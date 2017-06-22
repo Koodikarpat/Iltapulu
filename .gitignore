@@ -1,8 +1,11 @@
-.idea/
+*.iml
 .gradle
 /local.properties
-/.idea/workspace.xml
-/.idea/libraries
+/.idea
 .DS_Store
 /build
 /captures
+*.apk
+gradle/
+gradlew
+gradlew.bat
