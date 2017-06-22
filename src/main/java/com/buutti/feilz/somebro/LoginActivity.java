@@ -71,4 +71,8 @@ public class LoginActivity extends Activity {
         });
 
     }
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(getApplicationContext(),"The fuck ya tryinna do bitch",Toast.LENGTH_SHORT).show();
+    }
 }
