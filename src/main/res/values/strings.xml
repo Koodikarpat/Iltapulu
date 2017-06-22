@@ -11,10 +11,12 @@
     <string name="fb">Facebook</string>
     <string name="post">post</string>
     <string name="facebook_app_id">1760231880958026</string>
+    <string name="fb_login_protocol_scheme">fb1760231880958026</string>
     <string name="instagram">Instagram</string>
     <string name="unlock">UNLOCK</string>
     <string name="unlockpassword">unlockPassword</string>
     <string name="placeHolder">text</string>
+    <string name="account_kit_client_token">328cd3075272d6199b606b29dea399ae</string>
 
     <string name="twitter_consumer_key">Y4QJVs9F7nWDizjPQrIR5Yg7d</string>
     <string name="twitter_consumer_secret">exoOc6Hk7W3HOkaM0HDpqGgw9leY6iWgITVFLHXWZCwecruhS9</string>

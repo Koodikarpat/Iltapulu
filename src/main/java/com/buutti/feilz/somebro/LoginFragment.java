@@ -2,7 +2,9 @@ package com.buutti.feilz.somebro;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.ViewDragHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,11 +12,23 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
+import com.facebook.*;
+import com.facebook.login.*;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.*;
+import com.facebook.internal.*;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+
+import com.facebook.accountkit.*;
+import android.support.customtabs.*;
+import android.support.v7.cardview.*;
+import android.support.*;
 
 import com.github.gorbin.asne.core.SocialNetwork;
 import com.github.gorbin.asne.core.SocialNetworkManager;
 import com.github.gorbin.asne.core.listener.OnLoginCompleteListener;
-import com.github.gorbin.asne.facebook.FacebookSocialNetwork;
+//import com.github.gorbin.asne.facebook.FacebookSocialNetwork;
 import com.github.gorbin.asne.instagram.InstagramSocialNetwork;
 import com.github.gorbin.asne.twitter.TwitterSocialNetwork;
 
@@ -22,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
+
+import static android.R.attr.data;
 
 
 public class LoginFragment extends Fragment implements SocialNetworkManager.OnInitializationCompleteListener, OnLoginCompleteListener {
@@ -43,7 +59,7 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
     public static final int GOOGLE =3;
     public static final int FACEBOOK =4;
     public static final int INSTAGRAM =7;
-    private Button facebook;
+    private LoginButton facebook;
     private Button twitter;
     private Button instagram;
     private Button nextButton;
@@ -54,10 +70,20 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
     public boolean isFbLoggedIn;
     public boolean isTwitterLoggedIn;
 
+    private CallbackManager callbackManager;
+
     MainActivity mainActivity;
 
     public LoginFragment() {
 
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+
+
+
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -66,8 +92,38 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
         View rootView = inflater.inflate(R.layout.loginfragment, container, false);
         ((SMLoginHandler)getActivity()).getSupportActionBar().setTitle(R.string.app_name);
         // init buttons and set Listener
-        facebook = (Button) rootView.findViewById(R.id.facebook);
-        facebook.setOnClickListener(loginClick);
+
+        isFbLoggedIn = false;
+        isTwitterLoggedIn = false;
+
+        facebook = (LoginButton) rootView.findViewById(R.id.facebook);
+
+        callbackManager = CallbackManager.Factory.create();
+        //facebook.setOnClickListener(loginClick);
+
+        facebook.setReadPermissions("email");
+
+
+        facebook.registerCallback(callbackManager, new FacebookCallback<com.facebook.login.LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                isFbLoggedIn = true;
+                Log.i("SUCCESS", "SUCCESS");
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+
+            }
+        });
+
+
+
         twitter = (Button) rootView.findViewById(R.id.twitter);
         twitter.setOnClickListener(loginClick);
         nextButton = (Button) rootView.findViewById(R.id.nextButton);
@@ -95,8 +151,8 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
             mSocialNetworkManager = new SocialNetworkManager();
 
             //Init and add to manager FacebookSocialNetwork
-            FacebookSocialNetwork fbNetwork = new FacebookSocialNetwork(this, fbScope);
-            mSocialNetworkManager.addSocialNetwork(fbNetwork);
+           // FacebookSocialNetwork fbNetwork = new FacebookSocialNetwork(this, fbScope);
+            //mSocialNetworkManager.addSocialNetwork(fbNetwork);
 
             //Init and add to manager TwitterSocialNetwork
             TwitterSocialNetwork twNetwork = new TwitterSocialNetwork(this, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_CALLBACK_URL);
@@ -119,19 +175,23 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
         }
         mainActivity = new MainActivity();
 
-        isFbLoggedIn = false;
-        isTwitterLoggedIn = false;
-
         return rootView;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+        Log.i("SUCCESS", "SUCCESS2");
     }
 
     private void initSocialNetwork(SocialNetwork socialNetwork){
         if(socialNetwork.isConnected()){
             switch (socialNetwork.getID()){
-                case FacebookSocialNetwork.ID:
+             /*   case FacebookSocialNetwork.ID:
                     facebook.setText("Show Facebook profile");
                     isFbLoggedIn = true;
-                    break;
+                    break;*/
                 case TwitterSocialNetwork.ID:
                     twitter.setText("Show Twitter profile");
                     isTwitterLoggedIn = true;
@@ -154,6 +214,8 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
 
     //Login listener
 
+
+
     private View.OnClickListener loginClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -161,7 +223,7 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
             Log.i("LOG IN", "click");
             switch (view.getId()){
                 case R.id.facebook:
-                    networkId = FacebookSocialNetwork.ID;
+                    //networkId = FacebookSocialNetwork.ID;
                     break;
                 case R.id.twitter:
                     networkId = TwitterSocialNetwork.ID;
@@ -191,10 +253,10 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
         SMLoginHandler.hideProgress();
         //startProfile(networkId);
         switch (networkId) {
-            case FacebookSocialNetwork.ID:
+           /* case FacebookSocialNetwork.ID:
                 facebook.setText("Show Facebook profile");
                 isFbLoggedIn = true;
-                break;
+                break;*/
             case TwitterSocialNetwork.ID:
                 twitter.setText("Show Twitter profile");
                 isTwitterLoggedIn = true;

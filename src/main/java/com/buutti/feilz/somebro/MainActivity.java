@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
@@ -15,29 +16,31 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.facebook.login.*;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.*;
+import com.facebook.internal.*;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+
 import com.github.gorbin.asne.core.SocialNetwork;
 import com.github.gorbin.asne.core.listener.OnPostingCompleteListener;
-import com.github.gorbin.asne.facebook.FacebookSocialNetwork;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
-
-import twitter4j.Twitter;
 
 public class MainActivity extends AppCompatActivity {
     String currentPicPath;
@@ -50,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     Switch fbSwitch;
     Switch twitterSwitch;
     Button postButton;
+
 
 
     final static int PICK_IMAGE = 1;
@@ -169,10 +173,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        if (fbSwitch.isChecked()){
+     /*   if (fbSwitch.isChecked()){
 
             SocialNetwork sn = LoginFragment.mSocialNetworkManager.getSocialNetwork(LoginFragment.FACEBOOK);
-            sn.requestAccessToken();
+
             if (sn.isConnected()) {
                 Log.i("FACEBOOK", "SMMM");
                 if (pic) {
@@ -191,7 +195,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
+        }*/
+
+        if (fbSwitch.isChecked()){
+
+
         }
+
+
     }
 
     @Override
