@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:orientation="horizontal"
         android:weightSum="6">
 
@@ -19,7 +21,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="6">
+        android:weightSum="6"
+        android:layout_marginTop="5dp">
 
         <Button
             android:id="@+id/twitter"
@@ -28,40 +31,17 @@
             android:layout_gravity="center_horizontal"
             android:layout_margin="8dp"
             android:layout_weight="5"
-            android:background="#55ACEE"
+            android:background="@color/com_facebook_blue"
+            android:drawableLeft="@drawable/twitterlogo"
             android:text="@string/login_via_twitter"
             android:textColor="#ffffffff" />
 
-        <CheckBox
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:id="@+id/twCheckbox"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="6">
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/login_via_instagram"
-        android:id="@+id/instagram"
-        android:layout_gravity="center_horizontal"
-        android:background="#CD486B"
-        android:layout_margin="8dp"
-        android:textColor="#ffffffff"/>
-    <CheckBox
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:id="@+id/igCheckbox"/>
     </LinearLayout>
 
     <Button
         android:id="@+id/nextButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:layout_marginTop="10dp"
+        android:text="Start posting.." />
 </LinearLayout>

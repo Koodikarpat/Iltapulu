@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.ViewDragHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,19 +11,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
-import com.facebook.*;
-import com.facebook.login.*;
+
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.*;
-import com.facebook.internal.*;
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
-
-import com.facebook.accountkit.*;
-import android.support.customtabs.*;
-import android.support.v7.cardview.*;
-import android.support.*;
-
+import com.facebook.login.widget.LoginButton;
 import com.github.gorbin.asne.core.SocialNetwork;
 import com.github.gorbin.asne.core.SocialNetworkManager;
 import com.github.gorbin.asne.core.listener.OnLoginCompleteListener;
@@ -35,9 +28,6 @@ import com.github.gorbin.asne.twitter.TwitterSocialNetwork;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.StringTokenizer;
-
-import static android.R.attr.data;
 
 
 public class LoginFragment extends Fragment implements SocialNetworkManager.OnInitializationCompleteListener, OnLoginCompleteListener {
@@ -71,6 +61,7 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
     public boolean isTwitterLoggedIn;
 
     private CallbackManager callbackManager;
+    AccessTokenTracker accessTokenTracker;
 
     MainActivity mainActivity;
 
@@ -80,10 +71,15 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-
-
-
+     /*   accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken newAccessToken) {
+                updateWithToken(newAccessToken);
+            }
+        };*/
         super.onCreate(savedInstanceState);
+        isTwitterLoggedIn = false;
+        updateWithToken(AccessToken.getCurrentAccessToken());
     }
 
     @Override
@@ -93,18 +89,16 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
         ((SMLoginHandler)getActivity()).getSupportActionBar().setTitle(R.string.app_name);
         // init buttons and set Listener
 
-        isFbLoggedIn = false;
-        isTwitterLoggedIn = false;
-
         facebook = (LoginButton) rootView.findViewById(R.id.facebook);
 
         callbackManager = CallbackManager.Factory.create();
         //facebook.setOnClickListener(loginClick);
 
+        facebook.setFragment(this);
         facebook.setReadPermissions("email");
 
 
-        facebook.registerCallback(callbackManager, new FacebookCallback<com.facebook.login.LoginResult>() {
+        facebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 isFbLoggedIn = true;
@@ -117,7 +111,7 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
             }
 
             @Override
-            public void onError(FacebookException error) {
+            public void onError(com.facebook.FacebookException error) {
 
             }
         });
@@ -193,7 +187,7 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
                     isFbLoggedIn = true;
                     break;*/
                 case TwitterSocialNetwork.ID:
-                    twitter.setText("Show Twitter profile");
+                    twitter.setText("Logged in!");
                     isTwitterLoggedIn = true;
                     break;
                 case InstagramSocialNetwork.ID:
@@ -222,15 +216,11 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
             int networkId = 0;
             Log.i("LOG IN", "click");
             switch (view.getId()){
-                case R.id.facebook:
-                    //networkId = FacebookSocialNetwork.ID;
-                    break;
+
                 case R.id.twitter:
                     networkId = TwitterSocialNetwork.ID;
                     break;
-               /* case R.id.instagram:
-                    networkId=InstagramSocialNetwork.ID;
-                    Log.i("LOG IN", "LOG IN IG"); */
+
 
             }
             SocialNetwork socialNetwork = mSocialNetworkManager.getSocialNetwork(networkId);
@@ -238,12 +228,12 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
                 if(networkId != 0) {
                     socialNetwork.requestLogin();
                     SMLoginHandler.showProgress("Loading social person");
-                    Log.i("LOG IN", "LOG IN SUCC");
                 } else {
                     Toast.makeText(getActivity(), "Wrong networkId", Toast.LENGTH_LONG).show();
                 }
             } else {
-                //startProfile(socialNetwork.getID());
+                socialNetwork.logout();
+                twitter.setText("Log back in!");
             }
         }
     };
@@ -258,7 +248,7 @@ public class LoginFragment extends Fragment implements SocialNetworkManager.OnIn
                 isFbLoggedIn = true;
                 break;*/
             case TwitterSocialNetwork.ID:
-                twitter.setText("Show Twitter profile");
+                twitter.setText("Log out!");
                 isTwitterLoggedIn = true;
                 break;
             case InstagramSocialNetwork.ID:
@@ -309,4 +299,15 @@ private View.OnClickListener nextClick = new View.OnClickListener() {
     }
 };
 
-}
+    private void updateWithToken(AccessToken currentAccessToken) {
+
+        if (currentAccessToken != null) {
+            isFbLoggedIn = true;
+            Log.i("FB", "LOGGED IN");
+        } else {
+            isFbLoggedIn = false;
+            Log.i("FB", "NOT LOGGED IN");
+            }
+        }
+    }
+

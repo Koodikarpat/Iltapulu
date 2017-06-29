@@ -2,11 +2,16 @@ package com.buutti.feilz.somebro;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,31 +21,40 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ButtonBarLayout;
+import android.text.Layout;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.login.*;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.*;
-import com.facebook.internal.*;
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
-
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareButton;
 import com.github.gorbin.asne.core.SocialNetwork;
 import com.github.gorbin.asne.core.listener.OnPostingCompleteListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
+
+import static android.R.color.white;
+import static android.graphics.Color.BLUE;
+import static android.graphics.Color.WHITE;
+import static android.graphics.Paint.ANTI_ALIAS_FLAG;
+import static com.buutti.feilz.somebro.R.id.view;
 
 public class MainActivity extends AppCompatActivity {
     String currentPicPath;
@@ -49,10 +63,15 @@ public class MainActivity extends AppCompatActivity {
     private boolean pic;
     EditText textToSend;
     ImageView photo;
-    Bitmap bitmap;
+    static Bitmap bitmap;
     Switch fbSwitch;
     Switch twitterSwitch;
     Button postButton;
+    Button clipButton;
+    LinearLayout innerLayout;
+    SharePhotoContent content;
+    ShareButton shareButton;
+    public boolean shareButtonEnabled;
 
 
 
@@ -82,8 +101,11 @@ public class MainActivity extends AppCompatActivity {
         fbSwitch = (Switch) findViewById(R.id.fbSwitch);
         twitterSwitch = (Switch) findViewById(R.id.twitterSwitch);
         postButton = (Button) findViewById(R.id.postButton);
+        clipButton = (Button) findViewById(R.id.clipboard);
+        innerLayout = (LinearLayout) findViewById(R.id.layoutID);
 
         enableSwitches();
+        shareButtonEnabled = true;
 
 
         final AlertDialog dialog;
@@ -92,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
         builder.setView(mView);
         final FloatingActionButton cameraButton = (FloatingActionButton) mView.findViewById(R.id.selectCamera);
         final FloatingActionButton galleryButton = (FloatingActionButton) mView.findViewById(R.id.selectFromGallery);
+        final FloatingActionButton clearButton = (FloatingActionButton) mView.findViewById(R.id.clearButton);
         dialog = builder.create();
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,6 +150,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        clearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                photo.setImageResource(android.R.drawable.ic_menu_camera);
+            }
+        });
         photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,9 +167,66 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 post();
-                Log.d("POSTED", "FACEBOOK");
             }
         });
+        clipButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               String text = textToSend.getText().toString();
+                ClipboardManager clipboard = (ClipboardManager)
+                        getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clipData = ClipData.newPlainText("text", text);
+                clipboard.setPrimaryClip(clipData);
+                Toast.makeText(getApplicationContext(), "Saved to clipboard", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        fbSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (shareButtonEnabled) {
+                    if (isChecked) {
+                        shareButton = (ShareButton) findViewById(R.id.shareButton);
+                        if(pic) {
+                            shareButton.setShareContent(content);
+                        }else if(!textToSend.getText().toString().isEmpty()){
+
+                            Bitmap bitmap = textAsBitmap(textToSend.getText().toString(),100, WHITE);
+
+                            SharePhoto photo = new SharePhoto.Builder()
+                                    .setBitmap(bitmap)
+                                    .build();
+                            content = new SharePhotoContent.Builder().addPhoto(photo)
+                                    .setRef("asdf")
+                                    .build();
+
+                            shareButton.setShareContent(content);
+
+                        }
+
+
+                    } else {
+                        shareButton.setShareContent(null);
+                    }
+                } else {
+                    return;
+                }
+            }
+        });
+
+    }
+    public Bitmap textAsBitmap(String text, float textSize, int textColor) {
+        Paint paint = new Paint(ANTI_ALIAS_FLAG);
+        paint.setTextSize(textSize);
+        paint.setColor(textColor);
+        paint.setTextAlign(Paint.Align.LEFT);
+        float baseline = -paint.ascent(); // ascent() is negative
+        int width = (int) (paint.measureText(text) + 0.5f); // round
+        int height = (int) (baseline + paint.descent() + 0.5f);
+        Bitmap image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(image);
+        canvas.drawText(text, 0, baseline, paint);
+        return image;
     }
 
     @Override
@@ -161,47 +247,17 @@ public class MainActivity extends AppCompatActivity {
             if (sn.isConnected()) {
                 if (pic) {
                     if (sn.isConnected()) {
-                        db.putInfo(f.getAbsolutePath(), textToSend.getText().toString());
+                        db.putInfo(currentPicPath, textToSend.getText().toString());
                         sn.requestPostPhoto(f, textToSend.getText().toString(), postingComplete);
                     }
                 } else {
                     if (sn.isConnected()) {
                         db.putText(textToSend.getText().toString());
                         sn.requestPostMessage(textToSend.getText().toString(), postingComplete);
-                        Log.i("FACE", "TEXTSENT");
                     }
                 }
             }
         }
-     /*   if (fbSwitch.isChecked()){
-
-            SocialNetwork sn = LoginFragment.mSocialNetworkManager.getSocialNetwork(LoginFragment.FACEBOOK);
-
-            if (sn.isConnected()) {
-                Log.i("FACEBOOK", "SMMM");
-                if (pic) {
-
-                    if (sn.isConnected()) {
-                        db.putInfo(f.getAbsolutePath(), textToSend.getText().toString());
-                        sn.requestPostPhoto(f, textToSend.getText().toString(), postingComplete);
-
-                    }
-                } else {
-                    if (sn.isConnected()) {
-                        db.putText(textToSend.getText().toString());
-                        sn.requestPostMessage(textToSend.getText().toString(), postingComplete);
-
-                        Log.i("FACEBOOK", "SENT");
-                    }
-                }
-            }
-        }*/
-
-        if (fbSwitch.isChecked()){
-
-
-        }
-
 
     }
 
@@ -260,6 +316,14 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         imgView.setImageBitmap(bitmap);
+
+        SharePhoto photo = new SharePhoto.Builder()
+                .setBitmap(bitmap)
+                .build();
+        content = new SharePhotoContent.Builder().addPhoto(photo)
+                .setRef("asdf")
+                .build();
+        shareButtonEnabled = true;
     }
 
     public String getPath(Uri uri) {
@@ -281,6 +345,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main,menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         int id = item.getItemId();
@@ -337,18 +402,20 @@ public class MainActivity extends AppCompatActivity {
 
          if(isFbLoggedIn.equals("true")){
             fbSwitch.setEnabled(true);
-             Log.i("LOG IN FB", "TRUE");
         }else {
              fbSwitch.setEnabled(false);
-             Log.i("LOG IN FB", "FALSE");
          }
         if(isTwitterLoggedIn.equals("true")){
             twitterSwitch.setEnabled(true);
-            Log.i("LOG IN TWIT", "TRUE");
         }else{
             twitterSwitch.setEnabled(false);
-            Log.i("LOG IN TWIT", "FALSE");
         }
     }
 
+   /* public static void share(final String message,
+                             final ShareContent shareContent,
+                             final FacebookCallback<Sharer.Result> callback) {
+        new ShareApi(message, shareContent)
+                .share(callback);
+    }*/
 }

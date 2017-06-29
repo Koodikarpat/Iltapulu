@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -21,10 +22,11 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
+
         Point s = new Point();
         getWindowManager().getDefaultDisplay().getSize(s);
         WindowManager.LayoutParams p = getWindow().getAttributes();
-        p.height=s.y/3;
+        p.height=s.y/5;
         p.width=(int)(s.x/1.2);
 
         this.getWindow().setAttributes(p);

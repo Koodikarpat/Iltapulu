@@ -85,8 +85,6 @@ public class SMLoginHandler extends AppCompatActivity implements FragmentManager
         super.onDestroy();
         SocialNetwork sn = LoginFragment.mSocialNetworkManager.getSocialNetwork(LoginFragment.TWITTER);
         if (sn.isConnected()) sn.logout();
-        sn=LoginFragment.mSocialNetworkManager.getSocialNetwork(LoginFragment.FACEBOOK);
-        if (sn.isConnected()) sn.logout();
     }
    /* public void onNextButtonClick(View view) {
         Intent i = new Intent(this, PostActivity.class);
