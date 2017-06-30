@@ -2,6 +2,7 @@ package com.buutti.feilz.somebro;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -28,6 +30,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -72,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
     SharePhotoContent content;
     ShareButton shareButton;
     public boolean shareButtonEnabled;
+    ViewTreeObserver vto;
+    ProgressDialog pd;
 
 
 
@@ -302,7 +307,7 @@ public class MainActivity extends AppCompatActivity {
         //Convert bitmap to byte array
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
         byte[] bitmapdata = bos.toByteArray();
 
         //write the bytes in file
@@ -376,6 +381,7 @@ public class MainActivity extends AppCompatActivity {
         return imgUri;
     }
     private void openPostHistory(){
+
         Intent i = new Intent(MainActivity.this,MessageHistory.class);
         startActivity(i);
     }
@@ -412,6 +418,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+
+
    /* public static void share(final String message,
                              final ShareContent shareContent,
                              final FacebookCallback<Sharer.Result> callback) {
@@ -419,3 +428,6 @@ public class MainActivity extends AppCompatActivity {
                 .share(callback);
     }*/
 }
+
+
+

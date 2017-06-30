@@ -59,10 +59,12 @@ public class CustomList extends ArrayAdapter<Product>{
 }*/
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,9 +72,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class CustomList extends ArrayAdapter<String>{
+
     private final Activity context;
     View rowView;
     private final ArrayList<String> web;
@@ -84,10 +88,9 @@ public class CustomList extends ArrayAdapter<String>{
         this.web = web;
         this.imageId = imageId;
 
-
     }
     @Override
-    public View getView(int position, View view, ViewGroup parent) {
+    public View getView(final int position, View view, ViewGroup parent) {
 
             LayoutInflater inflater = context.getLayoutInflater();
             rowView = inflater.inflate(R.layout.list_single, null, true);
@@ -96,8 +99,10 @@ public class CustomList extends ArrayAdapter<String>{
         rowView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(this, LoginActivity.class);
-                startActivity(i);
+
+                Intent i = new Intent(context, SingleItem.class);
+                i.putExtra("ImageID", imageId.get(position));
+                context.startActivity(i);
             }
         });
 
@@ -109,11 +114,14 @@ public class CustomList extends ArrayAdapter<String>{
 
         if(!imageId.isEmpty()) {
             //imageView.setImageResource(imageId.get(position));
-            Bitmap myBitmap = BitmapFactory.decodeFile(imageId.get(position));
-
-            imageView.setImageBitmap(myBitmap);
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize = 5;
+                  Bitmap myBitmap = BitmapFactory.decodeFile(imageId.get(position), options);
+                imageView.setImageBitmap(myBitmap);
+          //  imageView.setImageURI(Uri.parse(imageId.get(position)));
         }
-
         return rowView;
     }
+
+
 }
